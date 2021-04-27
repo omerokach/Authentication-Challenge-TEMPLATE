@@ -66,9 +66,8 @@ module.exports.userLogin_post = async (req, res) => {
     return res.status(403).send("User or Password incorrect");
   }
 
-  const token = createToken(body);
-  const refreshToken = createRefreshToken(body);
-
+  const token = createToken(savedUser);
+  const refreshToken = createRefreshToken(savedUser);
   const response = {
     accessToken: token,
     refreshToken: refreshToken,
@@ -102,14 +101,28 @@ module.exports.userToken_post = async (req, res) => {
     return res.status(401).send("Refresh Token Required");
   }
 
-  jwt.verify(refreshToken, "Rc123456!", async (err, decodedToken) => {
+  jwt.verify(refreshToken, "Rc123456!", (err, decodedToken) => {
     if (err) {
-      console.log(err);
       return res.status(403).send("Invalid Refresh Token");
     } else {
-      console.log(decodedToken);
       const newToken = createToken(decodedToken.user);
       return res.status(200).send({ accessToken: newToken });
+    }
+  });
+};
+
+module.exports.userLogout_post = async (req, res) => {
+  const refreshToken = req.body.token;
+
+  if (!refreshToken) {
+    return res.status(400).send("Refresh Token Required");
+  }
+
+  jwt.verify(refreshToken, "Rc123456!", async (err, decodedToken) => {
+    if (err) {
+      return res.status(400).send("Invalid Refresh Token");
+    } else {
+      return res.status(200).send("User Logged Out Successfully");
     }
   });
 };
