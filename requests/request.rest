@@ -1,0 +1,13 @@
+GET "http://localhost:3001/api/v1/information" 
+Authorization: : ""
+
+###
+POST http://localhost:3001/users/register
+content-type: : application/json
+
+{
+    "email": "test@test.com", 
+    "user": "omerTest", 
+    "password": "omwlef2"
+}
+
